@@ -23,6 +23,7 @@
   <div id="canvas-container"></div>
 
   <!-- HTML text overlays — fixed, above canvas, pointer-events: none except <a> -->
+  <div id="vignette" style="position:fixed; inset:0; pointer-events:none; z-index:5; opacity:0; background: radial-gradient(ellipse at center, transparent 40%, rgba(3,5,10,0.85) 100%);"></div>
   <div id="text-layer" aria-live="polite"></div>
 
   <!-- Scroll height driver — creates scrollable height; DOM never moves -->

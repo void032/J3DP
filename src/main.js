@@ -7,6 +7,8 @@ import { AssetLoader }        from './core/AssetLoader.js';
 import { HeroScene }       from './scenes/HeroScene.js';
 import { MountainPass }    from './scenes/MountainPass.js';
 import { CloudScene }      from './scenes/CloudScene.js';
+import { ForestScene }     from './scenes/ForestScene.js';
+import { DescentScene }    from './scenes/DescentScene.js';
 
 async function init() {
   // Mobile overrides logic
@@ -28,12 +30,16 @@ async function init() {
   const hero     = HeroScene.init(sm.scene, sm.renderer);
   const pass     = MountainPass.init(sm.scene);
   const cloud    = CloudScene.init(sm.scene, sm.camera);
+  const forest   = ForestScene.init(sm.scene);
+  const descent  = DescentScene.init(sm.scene, sm.camera);
 
   // 4. Register RAF updates
   sm.register((delta) => rig.update(delta));
   sm.register((delta) => hero.update(delta));
   sm.register((delta, progress) => pass.update(delta, progress));
   sm.register((delta, progress) => cloud.update(delta, progress));
+  sm.register((delta, progress) => forest.update(delta, progress, sm.camera));
+  sm.register((delta, progress) => descent.update(delta, progress));
   AssetLoader.loadSecondary();
   AssetLoader.loadLazy();
 
