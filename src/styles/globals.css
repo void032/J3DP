@@ -1,0 +1,60 @@
+:root {
+  /* Core palette */
+  --bg:            #03050a;
+  --bg-mid:        #060d18;
+  --fog-night:     #03050a;
+  --fog-cloud:     #8fa8cc;
+  --fog-forest:    #0a1a0f;
+
+  /* Text */
+  --text-primary:  #f0ede6;
+  --text-dim:      rgba(240, 237, 230, 0.50);
+  --text-accent:   #7eb8f7;   /* sky blue  — hero/mountain scenes */
+  --text-gold:     #f0c060;   /* warm gold — descent/forest scenes */
+  --text-cloud:    #c8d8ef;   /* fog white — cloud scene text */
+
+  /* Overlay */
+  --vignette: rgba(3, 5, 10, 0.72);
+
+  /* Typography */
+  --font-display: 'Syne', sans-serif;
+  --font-mono:    'Space Mono', monospace;
+  --font-body:    'Inter', sans-serif;
+
+  /* Fluid type scale */
+  --text-hero:    clamp(52px, 9vw, 128px);
+  --text-section: clamp(32px, 5vw, 76px);
+  --text-sub:     clamp(15px, 2vw, 24px);
+  --text-body:    clamp(13px, 1.4vw, 18px);
+  --text-label:   clamp(10px, 1vw, 13px);
+
+  /* Easing */
+  --ease-cinema: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-drift:  cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  overflow-x: hidden;
+  background: var(--bg);
+  /* Scrollbar hide: */
+  scrollbar-width: none;
+}
+::-webkit-scrollbar { display: none; }
+
+#canvas-container {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+#text-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;   /* Allow scroll to reach scroll-driver behind it */
+}
+
+/* Links inside text-layer ARE interactive */
+#text-layer a { pointer-events: auto; }
