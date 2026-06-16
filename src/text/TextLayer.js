@@ -61,7 +61,7 @@ const TEXT_BEATS = [
     animation: 'dust',
     position: 'center',
     html: `
-      <h2 class="text-hero" style="color: var(--text-cloud); font-family: var(--font-display); font-weight: 800;">WHERE LIQUIDITY FLOWS</h2>
+      <h2 class="text-hero" style="font-family: var(--font-display); font-weight: 800; color: inherit;">WHERE LIQUIDITY FLOWS</h2>
     `
   },
   // Scene 4

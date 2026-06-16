@@ -5,6 +5,8 @@ import { createTextLayer }    from './text/TextLayer.js';
 import { AssetLoader }        from './core/AssetLoader.js';
 
 import { HeroScene }       from './scenes/HeroScene.js';
+import { MountainPass }    from './scenes/MountainPass.js';
+import { CloudScene }      from './scenes/CloudScene.js';
 
 async function init() {
   // Mobile overrides logic
@@ -24,11 +26,16 @@ async function init() {
 
   // 3. Init scenes
   const hero     = HeroScene.init(sm.scene, sm.renderer);
+  const pass     = MountainPass.init(sm.scene);
+  const cloud    = CloudScene.init(sm.scene, sm.camera);
 
   // 4. Register RAF updates
   sm.register((delta) => rig.update(delta));
   sm.register((delta) => hero.update(delta));
-  AssetLoader.loadSecondary(); // lazy-load remaining assets
+  sm.register((delta, progress) => pass.update(delta, progress));
+  sm.register((delta, progress) => cloud.update(delta, progress));
+  AssetLoader.loadSecondary();
+  AssetLoader.loadLazy();
 
   // 5. Wire scroll engine
   createScrollEngine({ cameraRig: rig, textLayer: text, sceneManager: sm });

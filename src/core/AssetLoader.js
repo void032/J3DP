@@ -81,8 +81,18 @@ class Loader {
 
   loadSecondary() {
     // Phase 2: Show progress bar but don't block start.
-    // In a real scenario we might load these dynamically.
-    // For scaffolding, we just resolve immediately or provide a mechanism.
+    const secondaryAssets = [
+      { type: 'texture', id: 'cloud_sprite', url: '/textures/cloud_sprite.png' },
+      { type: 'texture', id: 'forest_canopy', url: '/textures/forest_canopy.jpg' }
+    ];
+
+    this.totalToLoad += secondaryAssets.length;
+    secondaryAssets.forEach(asset => this.loadTexture(asset.id, asset.url));
+  }
+
+  loadLazy() {
+    // Phase 3: Lazy load models / video in background
+    this.loadModel('mountains', '/models/mountains.glb');
   }
 
   hideLoader() {

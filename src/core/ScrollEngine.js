@@ -17,6 +17,11 @@ export function createScrollEngine({ cameraRig, textLayer, sceneManager, fogCont
       // Drive text overlay
       if (textLayer) textLayer.update(p);
 
+      // Update SceneManager progress for its registered updaters
+      if (sceneManager && sceneManager.setProgress) {
+        sceneManager.setProgress(p);
+      }
+
       // Drive fog + lighting per scene
       if (fogController && sceneManager) {
         fogController.update(p, sceneManager.scene, sceneManager.renderer);
