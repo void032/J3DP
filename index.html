@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROJECT NAME</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap">
+  <link rel="stylesheet" href="/src/styles/globals.css">
+  <link rel="stylesheet" href="/src/styles/text.css">
+  <link rel="stylesheet" href="/src/styles/loader.css">
+</head>
+<body>
+  <!-- Loading screen -->
+  <div id="loader">
+    <div id="loader-bar-track">
+      <div id="loader-bar"></div>
+    </div>
+    <span id="loader-label">Loading world…</span>
+  </div>
+
+  <!-- Three.js mounts here — fixed, fills viewport -->
+  <div id="canvas-container"></div>
+
+  <!-- HTML text overlays — fixed, above canvas, pointer-events: none except <a> -->
+  <div id="text-layer" aria-live="polite"></div>
+
+  <!-- Scroll height driver — creates scrollable height; DOM never moves -->
+  <!-- 600vh = pacing. Adjust this single value to make flight faster/slower. -->
+  <div id="scroll-driver" style="height: 600vh; position: relative; z-index: 1;"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
