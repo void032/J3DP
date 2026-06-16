@@ -9,6 +9,8 @@ import { MountainPass }    from './scenes/MountainPass.js';
 import { CloudScene }      from './scenes/CloudScene.js';
 import { ForestScene }     from './scenes/ForestScene.js';
 import { DescentScene }    from './scenes/DescentScene.js';
+import { FooterScene }     from './scenes/FooterScene.js';
+import { MouseParallax }   from './utils/MouseParallax.js';
 
 async function init() {
   // Mobile overrides logic
@@ -32,6 +34,9 @@ async function init() {
   const cloud    = CloudScene.init(sm.scene, sm.camera);
   const forest   = ForestScene.init(sm.scene);
   const descent  = DescentScene.init(sm.scene, sm.camera);
+  const footer   = FooterScene.init(sm.scene, sm.camera);
+  const mouse    = MouseParallax.create(rig);
+  mouse.setShaderUniform(footer.footerMaterial.uniforms.u_mouse);
 
   // 4. Register RAF updates
   sm.register((delta) => rig.update(delta));
@@ -40,6 +45,18 @@ async function init() {
   sm.register((delta, progress) => cloud.update(delta, progress));
   sm.register((delta, progress) => forest.update(delta, progress, sm.camera));
   sm.register((delta, progress) => descent.update(delta, progress));
+  sm.register((delta, progress) => footer.update(delta, progress));
+
+  // Call sceneFadeOut on old scenes
+  sm.register((delta, progress) => {
+    if (progress >= 0.88) {
+      hero.sceneFadeOut(progress);
+      pass.sceneFadeOut(progress);
+      cloud.sceneFadeOut(progress);
+      forest.sceneFadeOut(progress);
+      descent.sceneFadeOut(progress);
+    }
+  });
   AssetLoader.loadSecondary();
   AssetLoader.loadLazy();
 

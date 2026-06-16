@@ -4,8 +4,28 @@ import { dust } from './animations/dust.js';
 import { typewriter } from './animations/typewriter.js';
 import { reveal } from './animations/reveal.js';
 import { glitch } from './animations/glitch.js';
+import anime from 'animejs';
 
-const ANIMATIONS = { cinematic, float, dust, typewriter, reveal, glitch };
+export function logoReveal(el, dir) {
+  if (dir === 'in') {
+    el.style.display = 'block';
+  }
+  return anime({
+    targets: el,
+    clipPath: dir === 'in' ? ['inset(0 100% 0 0)', 'inset(0 0% 0 0)'] : ['inset(0 0% 0 0)', 'inset(0 100% 0 0)'],
+    duration: 1200,
+    easing: 'easeOutQuart',
+    complete: () => {
+      if (dir === 'in') el.classList.add('logo-pulse');
+      if (dir === 'out') {
+        el.classList.remove('logo-pulse');
+        el.style.display = 'none';
+      }
+    }
+  });
+}
+
+const ANIMATIONS = { cinematic, float, dust, typewriter, reveal, glitch, logoReveal };
 
 const TEXT_BEATS = [
   // Scene 1
@@ -126,6 +146,19 @@ const TEXT_BEATS = [
     `
   },
   // Scene 6 (Footer)
+  {
+    id: 'footer-logo',
+    scrollIn: 0.90,
+    scrollOut: 'never',
+    animation: 'logoReveal',
+    position: 'center',
+    html: `
+      <svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="fill: white;">
+        <rect width="200" height="60" rx="4"/>
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="var(--font-display)" font-weight="800" font-size="24" fill="black">PROJECT LOGO</text>
+      </svg>
+    `
+  },
   {
     id: 'footer-tagline',
     scrollIn: 0.91,

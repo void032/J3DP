@@ -1,1 +1,23 @@
 /* Empty text.css to prevent 404s */
+
+.footer-link {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  letter-spacing: 0.15em;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.2s, letter-spacing 0.3s var(--ease-cinema);
+}
+.footer-link:hover {
+  color: var(--text-accent);
+  letter-spacing: 0.25em;
+}
+
+@keyframes pulseGlow {
+  0% { filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); }
+  50% { filter: drop-shadow(0 0 8px rgba(255,255,255,0.6)); }
+  100% { filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); }
+}
+.logo-pulse {
+  animation: pulseGlow 2s infinite ease-in-out;
+}
