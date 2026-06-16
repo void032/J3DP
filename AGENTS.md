@@ -304,3 +304,10 @@ Each PR Jules opens must include:
   their `.dispose()` lives
 - Confirmation that `npm run build` passed with zero errors
 - Note on any RAF-touched code and whether allocations were audited
+
+## Full Spec Reference
+
+The complete scene-by-scene technical spec (camera waypoints, text beats, shader code,
+asset list, scene breakdown) is in `.agents/workflows/cinematic-spec.md`.
+Read it before implementing anything in `src/scenes/`, `src/objects/`, `src/text/`,
+or `src/core/CameraRig.js`.
