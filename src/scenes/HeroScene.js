@@ -23,7 +23,8 @@ export const HeroScene = {
       max: new THREE.Vector3(300, 300, 300)
     };
     const isMobile = window.innerWidth < 768;
-    const starCount = isMobile ? 200 : 800;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const starCount = reduced ? 0 : (isMobile ? 200 : 800);
 
     const stars = new Particles({
       count: starCount,
@@ -62,6 +63,56 @@ export const HeroScene = {
     // Only update particles in this scene
     for (const obj of this.objects) {
       if (obj.update) obj.update(delta);
+    }
+  },
+
+  sceneFadeOut(progress) {
+    if (!this.group && !this.objects) return;
+
+    // Lerp from 0.88 (1) to 0.92 (0)
+    let opacity = 1.0;
+    if (progress >= 0.88 && progress <= 0.92) {
+      opacity = 1.0 - ((progress - 0.88) / 0.04);
+    } else if (progress > 0.92) {
+      opacity = 0.0;
+    }
+
+
+    // Optimized fade out
+    if (!this._fadeChildren) {
+       this._fadeChildren = [];
+       const traverse = (obj) => {
+         if (obj.isMesh || obj.isPoints) this._fadeChildren.push(obj);
+         if (obj.children) obj.children.forEach(traverse);
+       };
+       if (this.group) traverse(this.group);
+       if (this.objects) {
+         this.objects.forEach(o => {
+           if (o.mesh) traverse(o.mesh);
+           if (o.points) traverse(o.points);
+         });
+       }
+    }
+
+    for (let i=0; i<this._fadeChildren.length; i++) {
+       const obj = this._fadeChildren[i];
+       if (obj.material) {
+         const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+         for (let m=0; m<mats.length; m++) {
+           const mat = mats[m];
+           if (mat.transparent !== undefined) {
+              if (!mat.transparent) {
+                 mat.transparent = true;
+                 mat.needsUpdate = true;
+              }
+              mat.opacity = opacity;
+           }
+         }
+       }
+    }
+
+    if (progress >= 0.92) {
+       if (this.group) this.group.visible = false;
     }
   },
 

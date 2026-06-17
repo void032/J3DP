@@ -1,6 +1,8 @@
 import anime from 'animejs';
 
 export function typewriter(el, dir) {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const timeScale = reduced ? 0.15 : 1;
   if (dir === 'in') {
     el.style.display = 'block';
   }
@@ -52,8 +54,8 @@ export function typewriter(el, dir) {
   return anime({
     targets: chars,
     opacity: dir === 'in' ? [0, 1] : [1, 0],
-    delay: anime.stagger(dir === 'in' ? 38 : 18),
-    duration: 160,
+    delay: anime.stagger((dir === 'in' ? 38 : 18) * timeScale),
+    duration: (160) * timeScale,
     easing: 'linear',
     complete: dir === 'out' ? () => {
       el.style.display = 'none';

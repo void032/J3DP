@@ -5,10 +5,21 @@ import { createTextLayer }    from './text/TextLayer.js';
 import { AssetLoader }        from './core/AssetLoader.js';
 
 import { HeroScene }       from './scenes/HeroScene.js';
+import { MountainPass }    from './scenes/MountainPass.js';
+import { CloudScene }      from './scenes/CloudScene.js';
+import { ForestScene }     from './scenes/ForestScene.js';
+import { DescentScene }    from './scenes/DescentScene.js';
+import { FooterScene }     from './scenes/FooterScene.js';
+import { MouseParallax }   from './utils/MouseParallax.js';
+import { FogController }   from './core/FogController.js';
 
 async function init() {
   // Mobile overrides logic
   const isMobile = window.innerWidth < 768;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Set global configs for other systems to read
+  window.APP_CONFIG = { isMobile, reduced };
   const scrollDriver = document.getElementById('scroll-driver');
   if (isMobile && scrollDriver) {
     scrollDriver.style.height = '500vh';
@@ -24,14 +35,49 @@ async function init() {
 
   // 3. Init scenes
   const hero     = HeroScene.init(sm.scene, sm.renderer);
+  const pass     = MountainPass.init(sm.scene);
+  const cloud    = CloudScene.init(sm.scene, sm.camera);
+  const forest   = ForestScene.init(sm.scene);
+  const descent  = DescentScene.init(sm.scene, sm.camera);
+  const footer   = FooterScene.init(sm.scene, sm.camera);
+  const mouse    = MouseParallax.create(rig);
+  mouse.setShaderUniform(footer.footerMaterial.uniforms.u_mouse);
 
   // 4. Register RAF updates
   sm.register((delta) => rig.update(delta));
   sm.register((delta) => hero.update(delta));
-  AssetLoader.loadSecondary(); // lazy-load remaining assets
+  sm.register((delta, progress) => pass.update(delta, progress));
+  sm.register((delta, progress) => cloud.update(delta, progress));
+  sm.register((delta, progress) => forest.update(delta, progress, sm.camera));
+  sm.register((delta, progress) => descent.update(delta, progress));
+  sm.register((delta, progress) => footer.update(delta, progress));
+
+  // Call sceneFadeOut on old scenes
+  sm.register((delta, progress) => {
+    if (progress >= 0.88) {
+      hero.sceneFadeOut(progress);
+      pass.sceneFadeOut(progress);
+      cloud.sceneFadeOut(progress);
+      forest.sceneFadeOut(progress);
+      descent.sceneFadeOut(progress);
+    }
+  });
+  AssetLoader.loadSecondary();
+  AssetLoader.loadLazy();
 
   // 5. Wire scroll engine
-  createScrollEngine({ cameraRig: rig, textLayer: text, sceneManager: sm });
+
+  // Hero scene contains the main ambient light, extract it to pass to FogController
+  const ambientLight = hero.ambientLight;
+
+  createScrollEngine({
+    cameraRig: rig,
+    textLayer: text,
+    sceneManager: sm,
+    fogController: {
+      update: (p, scene, renderer) => FogController.update(p, scene, renderer, ambientLight)
+    }
+  });
 
   // 6. Start RAF loop
   sm.startLoop();

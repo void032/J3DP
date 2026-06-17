@@ -24,12 +24,17 @@ export function createSceneManager(containerEl) {
   const updaters = [];
   function register(fn) { updaters.push(fn); }
 
+  let currentProgress = 0;
+  function setProgress(p) {
+    currentProgress = p;
+  }
+
   let rafId;
   function startLoop() {
     function loop() {
       rafId = requestAnimationFrame(loop);
       const delta = clock.getDelta();
-      for (const fn of updaters) fn(delta);
+      for (const fn of updaters) fn(delta, currentProgress);
       renderer.render(scene, camera);
     }
     loop();
@@ -49,5 +54,5 @@ export function createSceneManager(containerEl) {
     renderer.dispose();
   }
 
-  return { renderer, scene, camera, clock, register, startLoop, destroy };
+  return { renderer, scene, camera, clock, register, setProgress, startLoop, destroy };
 }

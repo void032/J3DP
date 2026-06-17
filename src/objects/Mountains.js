@@ -125,8 +125,7 @@ export class Mountains {
   }
 
   _disposeMaterial(mat) {
-    if (mat.map) mat.map.dispose();
-    if (mat.normalMap) mat.normalMap.dispose();
+    // We do NOT dispose textures from AssetLoader here, they are shared
     mat.dispose();
   }
 }

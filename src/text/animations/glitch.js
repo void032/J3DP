@@ -1,6 +1,8 @@
 import anime from 'animejs';
 
 export function glitch(el, dir) {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const timeScale = reduced ? 0.15 : 1;
   if (dir === 'in') {
     el.style.display = 'block';
   }
@@ -9,7 +11,7 @@ export function glitch(el, dir) {
     return anime({
       targets: el,
       opacity: [1, 0],
-      duration: 500,
+      duration: (500) * timeScale,
       easing: 'easeInQuart',
       complete: () => { el.style.display = 'none'; }
     });

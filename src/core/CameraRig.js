@@ -50,6 +50,13 @@ export function createCameraRig(camera) {
   // Current scroll progress (0→1)
   let scrollProgress = 0;
 
+  const isMobile = window.APP_CONFIG?.isMobile || false;
+  const reduced = window.APP_CONFIG?.reduced || false;
+
+  let lerpFactor = 0.055;
+  if (isMobile) lerpFactor = 0.09;
+  if (reduced) lerpFactor = 0.5;
+
   function setProgress(p) {
     scrollProgress = p;
   }
@@ -67,7 +74,7 @@ export function createCameraRig(camera) {
     lookAtCurve.getPoint(smoothT, targetLook);
 
     // Camera position: lerp with slight lag for weight
-    camera.position.lerp(targetPos, 0.055);
+    camera.position.lerp(targetPos, lerpFactor);
 
     // LookAt: lerp separately so camera "turns" slightly after position
     currentLookAt.lerp(targetLook, 0.07);

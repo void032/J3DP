@@ -1,1 +1,31 @@
 /* Empty text.css to prevent 404s */
+
+.footer-link {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  letter-spacing: 0.15em;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.2s, letter-spacing 0.3s var(--ease-cinema);
+}
+.footer-link:hover {
+  color: var(--text-accent);
+  letter-spacing: 0.25em;
+}
+
+@keyframes pulseGlow {
+  0% { filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); }
+  50% { filter: drop-shadow(0 0 8px rgba(255,255,255,0.6)); }
+  100% { filter: drop-shadow(0 0 2px rgba(255,255,255,0.2)); }
+}
+.logo-pulse {
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+.text-beat { position: fixed; pointer-events: none; }
+.text-beat.center     { left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; }
+.text-beat.bottom-center { left: 50%; bottom: 64px; transform: translateX(-50%); text-align: center; }
+.text-beat.bottom-left   { left: 64px; bottom: 80px; }
+.text-beat.bottom-right  { right: 64px; bottom: 80px; text-align: right; }
+.text-beat.left  { left: 64px; top: 50%; transform: translateY(-50%); }
+.text-beat.right { right: 64px; top: 50%; transform: translateY(-50%); text-align: right; }
