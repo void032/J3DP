@@ -11,10 +11,15 @@ import { ForestScene }     from './scenes/ForestScene.js';
 import { DescentScene }    from './scenes/DescentScene.js';
 import { FooterScene }     from './scenes/FooterScene.js';
 import { MouseParallax }   from './utils/MouseParallax.js';
+import { FogController }   from './core/FogController.js';
 
 async function init() {
   // Mobile overrides logic
   const isMobile = window.innerWidth < 768;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Set global configs for other systems to read
+  window.APP_CONFIG = { isMobile, reduced };
   const scrollDriver = document.getElementById('scroll-driver');
   if (isMobile && scrollDriver) {
     scrollDriver.style.height = '500vh';
@@ -61,7 +66,18 @@ async function init() {
   AssetLoader.loadLazy();
 
   // 5. Wire scroll engine
-  createScrollEngine({ cameraRig: rig, textLayer: text, sceneManager: sm });
+
+  // Hero scene contains the main ambient light, extract it to pass to FogController
+  const ambientLight = hero.ambientLight;
+
+  createScrollEngine({
+    cameraRig: rig,
+    textLayer: text,
+    sceneManager: sm,
+    fogController: {
+      update: (p, scene, renderer) => FogController.update(p, scene, renderer, ambientLight)
+    }
+  });
 
   // 6. Start RAF loop
   sm.startLoop();

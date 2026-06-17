@@ -53,7 +53,8 @@ export const MountainPass = {
 
     // Dust Motes
     const isMobile = window.innerWidth < 768;
-    const dustCount = isMobile ? 60 : 240;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const dustCount = reduced ? 0 : (isMobile ? 60 : 240);
 
     const bounds = {
       min: new THREE.Vector3(-15, -20, -20),
@@ -106,28 +107,38 @@ export const MountainPass = {
       opacity = 0.0;
     }
 
-    const applyOpacity = (obj) => {
-      if (obj && obj.material) {
-        if (Array.isArray(obj.material)) {
-          obj.material.forEach(m => { if(m.transparent !== undefined) { m.transparent = true; m.opacity = opacity; } });
-        } else {
-           if(obj.material.transparent !== undefined) {
-             obj.material.transparent = true;
-             obj.material.opacity = opacity;
-           }
-        }
-      }
-    };
 
-    if (this.group) {
-      this.group.traverse((child) => {
-        if (child.isMesh || child.isPoints) applyOpacity(child);
-      });
-    } else if (this.objects) {
-      this.objects.forEach(obj => {
-        if (obj.mesh) applyOpacity(obj.mesh);
-        else if (obj.points) applyOpacity(obj.points);
-      });
+    // Optimized fade out
+    if (!this._fadeChildren) {
+       this._fadeChildren = [];
+       const traverse = (obj) => {
+         if (obj.isMesh || obj.isPoints) this._fadeChildren.push(obj);
+         if (obj.children) obj.children.forEach(traverse);
+       };
+       if (this.group) traverse(this.group);
+       if (this.objects) {
+         this.objects.forEach(o => {
+           if (o.mesh) traverse(o.mesh);
+           if (o.points) traverse(o.points);
+         });
+       }
+    }
+
+    for (let i=0; i<this._fadeChildren.length; i++) {
+       const obj = this._fadeChildren[i];
+       if (obj.material) {
+         const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+         for (let m=0; m<mats.length; m++) {
+           const mat = mats[m];
+           if (mat.transparent !== undefined) {
+              if (!mat.transparent) {
+                 mat.transparent = true;
+                 mat.needsUpdate = true;
+              }
+              mat.opacity = opacity;
+           }
+         }
+       }
     }
 
     if (progress >= 0.92) {

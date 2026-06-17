@@ -19,7 +19,7 @@ export const FooterScene = {
 
     const isMobile = window.innerWidth < 768;
     this.stars = new Particles({
-      count: isMobile ? 300 : 1200,
+      count: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : (isMobile ? 300 : 1200),
       color: 0xffffff,
       size: 0.6,
       bounds: bounds,

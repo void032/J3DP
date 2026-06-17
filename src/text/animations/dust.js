@@ -1,6 +1,8 @@
 import anime from 'animejs';
 
 export function dust(el, dir) {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const timeScale = reduced ? 0.15 : 1;
   if (dir === 'in') {
     el.style.display = 'block';
   }
@@ -15,7 +17,7 @@ export function dust(el, dir) {
     targets: el,
     opacity: dir === 'in' ? [0, 1] : [1, 0],
     color: isCloudBeat && dir === 'in' ? [colorStart, colorEnd] : undefined,
-    duration: dir === 'in' ? (isCloudBeat ? 1000 : 1400) : 900,
+    duration: (dir === 'in' ? (isCloudBeat ? 1000 : 1400) : 900) * timeScale,
     easing: 'linear',
     complete: dir === 'out' ? () => {
       el.style.display = 'none';

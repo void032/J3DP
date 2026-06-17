@@ -13,7 +13,7 @@ export function logoReveal(el, dir) {
   return anime({
     targets: el,
     clipPath: dir === 'in' ? ['inset(0 100% 0 0)', 'inset(0 0% 0 0)'] : ['inset(0 0% 0 0)', 'inset(0 100% 0 0)'],
-    duration: 1200,
+    duration: 1200 * (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.15 : 1),
     easing: 'easeOutQuart',
     complete: () => {
       if (dir === 'in') el.classList.add('logo-pulse');
